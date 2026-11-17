@@ -140,7 +140,7 @@ input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 
 .brillo-barra { display: block; width: 100%; height: 2px; background: var(--line-fuerte); overflow: hidden; }
 .brillo-barra i { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); transition: transform 150ms var(--ease); }
 .hero-contenido { padding: clamp(96px, 16vh, 200px) 0 clamp(24px, 4vh, 40px); position: relative; pointer-events: none; }
-.hero-contenido a, .hero-contenido input, .hero-contenido label { pointer-events: auto; }
+.hero-contenido a, .hero-contenido button, .hero-contenido input, .hero-contenido label { pointer-events: auto; }
 .hero-bajada { max-width: 44ch; margin-top: 32px; font-size: clamp(16px, .4vw + 14px, 19px); color: #d6d6da; }
 /* Botones y contador de brillo en la misma fila: el contador es el protagonista de la demo. */
 .hero-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: 24px 40px; margin-top: 32px; }
