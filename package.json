@@ -1,0 +1,25 @@
+{
+  "name": "noir-detailing-olavarria-demo",
+  "private": true,
+  "version": "4.0.0",
+  "type": "module",
+  "description": "Demo web para locales de detailing de Olavarría (marca de ejemplo: NOIR Detailing).",
+  "scripts": {
+    "predev": "node scripts/preparar-imagenes.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/preparar-imagenes.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "imagenes": "node scripts/preparar-imagenes.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/anybody": "^5.3.0",
+    "@fontsource-variable/instrument-sans": "^5.3.0",
+    "@fontsource/dm-mono": "^5.3.0",
+    "leaflet": "1.9.4"
+  },
+  "devDependencies": {
+    "sharp": "0.33.5",
+    "vite": "6.3.5"
+  }
+}

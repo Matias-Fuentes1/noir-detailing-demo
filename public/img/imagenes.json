@@ -1,0 +1,82 @@
+{
+  "agua-perlas": {
+    "w": 1030,
+    "h": 1030
+  },
+  "hero-coupe": {
+    "w": 1376,
+    "h": 768
+  },
+  "interior-cuero": {
+    "w": 1200,
+    "h": 896
+  },
+  "nosotros/pulido-faro-oscuro": {
+    "w": 1600,
+    "h": 1067
+  },
+  "pintura-antes": {
+    "w": 688,
+    "h": 768
+  },
+  "pintura-despues": {
+    "w": 688,
+    "h": 768
+  },
+  "proceso/1-revision": {
+    "w": 1600,
+    "h": 1067
+  },
+  "proceso/2-lavado-descontaminado": {
+    "w": 1600,
+    "h": 1064
+  },
+  "proceso/3-correccion": {
+    "w": 1600,
+    "h": 698
+  },
+  "proceso/4-proteccion": {
+    "w": 1600,
+    "h": 743
+  },
+  "proceso/5-entrega": {
+    "w": 1600,
+    "h": 1067
+  },
+  "servicios/detailing-interior": {
+    "w": 1600,
+    "h": 1069
+  },
+  "servicios/lavado-premium": {
+    "w": 1600,
+    "h": 900
+  },
+  "servicios/motor-llantas": {
+    "w": 1600,
+    "h": 1067
+  },
+  "servicios/opticas": {
+    "w": 1600,
+    "h": 1200
+  },
+  "servicios/pulido-correccion": {
+    "w": 1600,
+    "h": 899
+  },
+  "servicios/tratamiento-ceramico": {
+    "w": 1600,
+    "h": 1067
+  },
+  "trabajos/trabajo-1": {
+    "w": 1600,
+    "h": 1067
+  },
+  "trabajos/trabajo-2": {
+    "w": 1600,
+    "h": 1067
+  },
+  "trabajos/trabajo-3": {
+    "w": 1600,
+    "h": 1068
+  }
+}

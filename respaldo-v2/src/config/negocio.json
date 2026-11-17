@@ -1,0 +1,218 @@
+{
+  "nombre": "NOIR Detailing",
+  "nombreCorto": "NOIR",
+  "ciudad": "Olavarría",
+  "lema": "Detailing en Olavarría",
+  "avisoDemo": "Demo · marca, precios y opiniones de ejemplo",
+
+  "whatsapp": "5492284611455",
+  "telefonoVisible": "2284 61-1455",
+  "direccion": "Av. Colón 2500, Olavarría, Buenos Aires",
+  "direccionCorta": "Av. Colón 2500",
+  "mapa": { "lat": -36.8927, "lng": -60.3225, "zoom": 15 },
+  "horario": [
+    { "dias": "Lunes a viernes", "horas": "8:30–12:30 y 15–19" },
+    { "dias": "Sábados", "horas": "9–13" }
+  ],
+  "horarioCorto": "Lun a Vie 8:30–12:30 y 15–19 · Sáb 9–13",
+  "instagram": { "usuario": "@noir.detailing", "url": "https://www.instagram.com/" },
+  "googleRating": "",
+
+  "mensajes": {
+    "turno": "Hola {nombreCorto}, quiero pedir un turno.",
+    "consultaServicio": "Hola {nombreCorto}, quiero consultar por {servicio}."
+  },
+
+  "hero": {
+    "titulo": "Tu auto, como el",
+    "tituloDestacado": "primer día.",
+    "bajada": "Pulido, tratamiento cerámico y detailing interior en Olavarría. Te mostramos la pintura antes de empezar y te damos el precio antes de tocar el auto.",
+    "foto": "hero-coupe",
+    "fotoAlt": "Coupé gris oscuro con la pintura brillante bajo las luces del taller",
+    "datos": [
+      { "icono": "calendario", "texto": "Turnos con día y hora" },
+      { "icono": "lupa", "texto": "Revisión de pintura sin cargo" },
+      { "icono": "pin", "texto": "Atención en {direccionCorta}" }
+    ]
+  },
+
+  "pulido": {
+    "titulo": "Las rayas se esconden en la",
+    "tituloDestacado": "luz.",
+    "texto": "Cada lavado con esponja o rodillo deja micro rayas. Con luz directa se ven como una telaraña alrededor del reflejo. Mové la luz y mirá cómo cambia en cada etapa.",
+    "etapas": [
+      { "nombre": "Cómo llega", "texto": "Micro rayas, hologramas y marcas de lavado." },
+      { "nombre": "Pulido de un paso", "texto": "Saca la mayoría de las marcas y recupera el brillo." },
+      { "nombre": "Pulido de dos pasos", "texto": "Corrección profunda: el reflejo queda como un espejo." }
+    ]
+  },
+
+  "ceramico": {
+    "titulo": "El agua",
+    "tituloDestacado": "resbala.",
+    "texto": "El cerámico deja una capa que repele el agua y la mugre. El auto se ensucia menos y se lava en la mitad de tiempo.",
+    "duracionAnios": 3,
+    "datos": [
+      { "titulo": "Duración: hasta {duracionAnios} años", "texto": "Según el producto elegido y el cuidado posterior." },
+      { "titulo": "Brillo más profundo", "texto": "La pintura gana reflejo y color." },
+      { "titulo": "Lavados más rápidos", "texto": "La mugre se va con agua y shampoo neutro." }
+    ]
+  },
+
+  "servicios": [
+    {
+      "id": "ceramico",
+      "nombre": "Tratamiento cerámico",
+      "incluye": ["Lavado y descontaminado completo", "Pulido de corrección", "Cerámico de 1 a 3 años"],
+      "tiempo": "2–3 días",
+      "precio": 420000,
+      "dias": 3,
+      "pintura": true,
+      "foto": "agua-perlas",
+      "fotoAlt": "Gotas de agua en perla sobre el capó oscuro de un auto con cerámico",
+      "destacado": true
+    },
+    {
+      "id": "pulido",
+      "nombre": "Pulido y corrección",
+      "incluye": ["Descontaminado de pintura", "Pulido de 1 o 2 pasos", "Sellado final"],
+      "tiempo": "1–2 días",
+      "precio": 180000,
+      "dias": 2,
+      "pintura": true,
+      "foto": "pintura-despues",
+      "fotoAlt": "Pintura negra pulida con un reflejo limpio y uniforme"
+    },
+    {
+      "id": "interior",
+      "nombre": "Detailing interior",
+      "incluye": ["Aspirado profundo", "Tapizados y alfombras", "Plásticos y vidrios"],
+      "tiempo": "4 h",
+      "precio": 65000,
+      "dias": 0,
+      "foto": "interior-cuero",
+      "fotoAlt": "Limpieza con pincel de un asiento de cuero negro"
+    },
+    {
+      "id": "lavado",
+      "nombre": "Lavado premium",
+      "incluye": ["Prelavado con espuma", "Lavado a mano a dos baldes", "Llantas y secado con microfibra"],
+      "tiempo": "2 h",
+      "precio": 35000,
+      "dias": 0,
+      "foto": "servicio-lavado",
+      "fotoAlt": "Auto cubierto de espuma activa durante el prelavado",
+      "fotoPendiente": "Auto cubierto de espuma activa en el prelavado"
+    },
+    {
+      "id": "opticas",
+      "nombre": "Ópticas",
+      "incluye": ["Pulido de faros opacos", "Protección contra el amarillo"],
+      "tiempo": "1 h",
+      "precio": 40000,
+      "dias": 0,
+      "foto": "servicio-opticas",
+      "fotoAlt": "Faro delantero de un auto, mitad opaco y mitad pulido",
+      "fotoPendiente": "Faro delantero mitad opaco, mitad pulido"
+    },
+    {
+      "id": "motor",
+      "nombre": "Motor y llantas",
+      "incluye": ["Limpieza del vano motor", "Acondicionado de plásticos", "Llantas y cálipers"],
+      "tiempo": "2 h",
+      "precio": 45000,
+      "dias": 0,
+      "foto": "servicio-motor",
+      "fotoAlt": "Vano motor limpio y acondicionado",
+      "fotoPendiente": "Vano motor limpio, plásticos acondicionados"
+    }
+  ],
+
+  "paquetes": [
+    {
+      "id": "esencial",
+      "nombre": "Esencial",
+      "precio": 85000,
+      "dias": 0,
+      "pintura": false,
+      "resumen": "Para dejarlo impecable por dentro y por fuera.",
+      "incluye": ["Lavado premium a mano", "Detailing interior", "Llantas y neumáticos", "Vidrios por dentro y por fuera"]
+    },
+    {
+      "id": "completo",
+      "nombre": "Completo",
+      "precio": 260000,
+      "dias": 2,
+      "pintura": true,
+      "masElegido": true,
+      "resumen": "Recupera el brillo y lo protege por meses.",
+      "incluye": ["Todo lo de Esencial +", "Descontaminado de pintura", "Pulido de un paso", "Sellador de 6 meses"]
+    },
+    {
+      "id": "premium",
+      "nombre": "Premium",
+      "precio": 520000,
+      "dias": 3,
+      "pintura": true,
+      "resumen": "Corrección profunda y protección por años.",
+      "incluye": ["Todo lo de Completo +", "Pulido de dos pasos", "Tratamiento cerámico de 3 años", "Ópticas y motor"]
+    }
+  ],
+  "paquetesNota": "Precio según tamaño y estado del auto. Te lo confirmamos al verlo.",
+
+  "cotizador": {
+    "porDefecto": { "tamano": "mediano", "principal": "completo", "estado": 1 },
+    "tamanos": [
+      { "id": "chico", "nombre": "Chico", "ejemplo": "Gol, Onix, 208", "multiplicador": 1 },
+      { "id": "mediano", "nombre": "Mediano / sedán", "ejemplo": "Cronos, Corolla, Vento", "multiplicador": 1.15 },
+      { "id": "suv", "nombre": "SUV / camioneta", "ejemplo": "Amarok, Hilux, Tracker", "multiplicador": 1.3 },
+      { "id": "grande", "nombre": "Grande / utilitario", "ejemplo": "Sprinter, Master, Kangoo", "multiplicador": 1.45 }
+    ],
+    "estados": [
+      { "nombre": "Como nuevo", "recargo": 0 },
+      { "nombre": "Uso diario", "recargo": 0.1 },
+      { "nombre": "Muy castigado", "recargo": 0.25, "diasExtra": 1 }
+    ],
+    "extras": [
+      { "id": "interior", "nombre": "Interior a fondo", "precio": 45000, "dias": 0.5 },
+      { "id": "opticas", "nombre": "Ópticas", "precio": 35000, "dias": 0 },
+      { "id": "motor", "nombre": "Motor", "precio": 30000, "dias": 0 },
+      { "id": "llantas", "nombre": "Llantas y cálipers", "precio": 40000, "dias": 0 },
+      { "id": "vidrios", "nombre": "Vidrios hidrofóbicos", "precio": 30000, "dias": 0 }
+    ],
+    "redondeo": 1000,
+    "nota": "El precio final te lo confirmamos después de revisar la pintura, sin cargo."
+  },
+
+  "trabajos": [
+    { "auto": "VW Amarok", "servicio": "Pulido + cerámico", "categoria": "ceramico", "foto": "trabajo-amarok", "fotoPendiente": "VW Amarok gris recién pulida, reflejo de luces en el capó" },
+    { "auto": "Toyota Hilux", "servicio": "Pulido de dos pasos", "categoria": "pulido", "foto": "trabajo-hilux", "fotoPendiente": "Toyota Hilux negra, puerta con mitad pulida y mitad sin pulir" },
+    { "auto": "Fiat Cronos", "servicio": "Detailing interior", "categoria": "interior", "foto": "trabajo-cronos", "fotoPendiente": "Interior de Fiat Cronos, tapizado limpio" },
+    { "auto": "Peugeot 208", "servicio": "Tratamiento cerámico", "categoria": "ceramico", "foto": "trabajo-208", "fotoPendiente": "Peugeot 208 con gotas de agua en perla sobre el techo" },
+    { "auto": "Ford Ranger", "servicio": "Detailing interior", "categoria": "interior", "foto": "trabajo-ranger", "fotoPendiente": "Interior de camioneta Ranger, tapizado y alfombras limpios" },
+    { "auto": "Chevrolet Cruze", "servicio": "Pulido de un paso", "categoria": "pulido", "foto": "trabajo-cruze", "fotoPendiente": "Chevrolet Cruze blanco, lateral pulido con reflejo nítido" }
+  ],
+
+  "proceso": [
+    { "titulo": "Revisión", "texto": "Miramos la pintura con luz y medidor de espesor, y te mostramos lo que vemos.", "foto": "proceso-revision", "fotoPendiente": "Detailer revisando la pintura con una linterna" },
+    { "titulo": "Lavado y descontaminado", "texto": "Espuma, lavado a mano, removedor de hierro y clay bar.", "foto": "proceso-lavado", "fotoPendiente": "Auto con espuma y removedor de hierro actuando" },
+    { "titulo": "Corrección", "texto": "El pulido que necesite tu pintura, ni más ni menos.", "foto": "proceso-correccion", "fotoPendiente": "Pulidora trabajando sobre un panel oscuro" },
+    { "titulo": "Protección", "texto": "Cerámico o sellador, según lo que elijas.", "foto": "proceso-proteccion", "fotoPendiente": "Aplicación de cerámico con aplicador sobre el capó" },
+    { "titulo": "Entrega", "texto": "Revisamos todo juntos y te explicamos cómo cuidarlo.", "foto": "proceso-entrega", "fotoPendiente": "Cliente recibiendo su auto terminado en el taller" }
+  ],
+
+  "opiniones": [
+    { "nombre": "Martín G.", "auto": "Toyota Hilux", "estrellas": 5, "texto": "Me mostraron las rayas con la luz antes de empezar y me pasaron el precio por WhatsApp. La camioneta quedó mejor que cuando la saqué de la concesionaria." },
+    { "nombre": "Carolina R.", "auto": "Peugeot 208", "estrellas": 5, "texto": "Le hice el cerámico hace unos meses y ahora lo lavo en un rato. El agua se va sola. Muy prolijos y puntuales con la entrega." },
+    { "nombre": "Diego F.", "auto": "VW Amarok", "estrellas": 5, "texto": "El interior tenía años de campo y quedó como nuevo. Me explicaron qué productos usar para mantenerlo." }
+  ],
+  "opinionesNota": "Opiniones de ejemplo. En la web real van las reseñas de Google del local.",
+
+  "preguntas": [
+    { "pregunta": "¿Cuánto dura el cerámico?", "respuesta": "Entre 1 y 3 años, según el producto que elijas y cómo lo cuides. Te dejamos por escrito qué hacer y qué evitar." },
+    { "pregunta": "¿Cuánto tarda cada servicio?", "respuesta": "Un lavado premium lleva unas 2 horas y un interior unas 4. El pulido lleva de 1 a 2 días y el cerámico de 2 a 3, porque necesita tiempo de curado." },
+    { "pregunta": "¿Puedo esperar mientras lo hacen?", "respuesta": "Sí, en los servicios de pocas horas (lavado, ópticas, motor). Para pulido y cerámico te avisamos por WhatsApp cuando está listo." },
+    { "pregunta": "¿Cuándo puedo lavar el auto después del cerámico?", "respuesta": "Esperá 7 días antes del primer lavado. Después, lavalo a mano con shampoo neutro y evitá los rodillos." },
+    { "pregunta": "¿Qué medios de pago aceptan?", "respuesta": "Efectivo, transferencia, débito, crédito y Mercado Pago." }
+  ]
+}
