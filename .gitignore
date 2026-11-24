@@ -6,3 +6,5 @@ dist/
 .env.*
 !.env.example
 respaldo-v2/
+.vercel
+.env*
