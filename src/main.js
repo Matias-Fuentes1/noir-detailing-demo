@@ -1,9 +1,12 @@
-import negocio from './config/negocio.json';
 import { iniciarHero } from './js/hero.js';
 import { iniciarInspeccion, iniciarComparador, iniciarResultados, iniciarAgua, iniciarProceso, iniciarParallax } from './js/efectos.js';
 import { iniciarCotizador } from './js/cotizador.js';
 import { iniciarMapa } from './js/contacto.js';
 
+import { medir } from './js/medicion.js';
+
+// El contenido viene escrito en la página (lo arma el servidor desde el panel): una sola fuente de verdad.
+const negocio = JSON.parse(document.getElementById('datos-negocio')?.textContent || '{}');
 const reducido = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const opciones = { reducido };
 
@@ -45,6 +48,7 @@ if (!reducido && 'IntersectionObserver' in window) {
 }
 
 /* ---------- Interacciones ---------- */
+medir();
 iniciarHero(opciones);
 iniciarInspeccion(negocio, opciones);
 iniciarComparador(document.getElementById('comparador'));
@@ -66,7 +70,7 @@ const barraCot = document.getElementById('barra-cotizador');
 const hero = document.getElementById('inicio');
 const formCot = document.getElementById('cotizador-form');
 const resumen = document.getElementById('cot-resumen');
-if ('IntersectionObserver' in window && barra && hero) {
+if ('IntersectionObserver' in window && barra && hero && formCot && resumen) {
   const estado = { heroVisible: true, enCotizador: false, resumenVisible: false };
   const pintar = () => {
     const mostrarCot = estado.enCotizador && !estado.resumenVisible;

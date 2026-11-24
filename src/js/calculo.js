@@ -1,5 +1,12 @@
-// Cálculo del cotizador. Lo usan la página (para el valor inicial, sin JS)
-// y el navegador (para actualizarlo en vivo). Todos los números salen de negocio.json.
+// Cálculo del cotizador: el ÚNICO lugar donde se calcula un precio.
+// Lo usan la página (valor inicial, sin JS), el navegador (en vivo), la API (recalcula lo que
+// manda el visitante antes de guardarlo) y el panel (vista previa de precios).
+// Todos los números salen del contenido normalizado (ver contenido.js).
+//
+// Fórmula: base = precio del paquete (o `precioCotizador` del servicio suelto) × multiplicador del tamaño
+//          + recargo del estado de pintura (solo si el principal trabaja la pintura)
+//          + extras. Cada parte se redondea al múltiplo de `redondeo`.
+// El precio "Desde" de las tarjetas de servicios (`precio`) NO entra en esta fórmula.
 
 const formato = new Intl.NumberFormat('es-AR', { maximumFractionDigits: 0 });
 
@@ -11,19 +18,27 @@ export const textoDias = (d) => {
   return `${n} ${n === 1 ? 'día' : 'días'}`;
 };
 
+// Opciones activas del paso "Paquete" (paquetes + servicios sueltos), con el precio que usa el cálculo.
 export function opcionesPrincipales(negocio) {
   return [
-    ...negocio.paquetes.map((p) => ({ ...p, tipo: 'paquete' })),
-    ...negocio.servicios.map((s) => ({ ...s, tipo: 'servicio' })),
+    ...negocio.paquetes.filter((p) => p.activo !== false).map((p) => ({ ...p, tipo: 'paquete' })),
+    ...negocio.servicios
+      .filter((s) => s.activo !== false && s.enCotizador !== false)
+      .map((s) => ({ ...s, precio: s.precioCotizador ?? s.precio, tipo: 'servicio' })),
   ];
 }
 
+export const tamanosActivos = (negocio) => negocio.cotizador.tamanos.filter((t) => t.activo !== false);
+export const extrasActivos = (negocio) => negocio.cotizador.extras.filter((e) => e.activo !== false);
+
 export function calcular(negocio, sel) {
   const c = negocio.cotizador;
-  const tamano = c.tamanos.find((t) => t.id === sel.tamano) ?? c.tamanos[0];
-  const principal = opcionesPrincipales(negocio).find((p) => p.id === sel.principal) ?? negocio.paquetes[0];
+  const tamanos = tamanosActivos(negocio);
+  const opciones = opcionesPrincipales(negocio);
+  const tamano = tamanos.find((t) => t.id === sel.tamano) ?? tamanos[0] ?? { id: '', nombre: '—', multiplicador: 1 };
+  const principal = opciones.find((p) => p.id === sel.principal) ?? opciones[0] ?? { id: '', nombre: '—', precio: 0, dias: 0, tipo: 'paquete' };
   const estado = c.estados[Number(sel.estado)] ?? c.estados[0];
-  const extras = c.extras.filter((e) => (sel.extras ?? []).includes(e.id));
+  const extras = extrasActivos(negocio).filter((e) => (sel.extras ?? []).includes(e.id));
   const redondeo = c.redondeo || 1;
   const redondear = (n) => Math.round(n / redondeo) * redondeo;
 
@@ -41,7 +56,7 @@ export function calcular(negocio, sel) {
   return { total, dias, tiempo: textoDias(dias), tamano, principal, estado, extras, desglose, aplicaEstado };
 }
 
-export function mensajePresupuesto(negocio, r, nombre) {
+export function mensajePresupuesto(negocio, r, nombre, codigo) {
   const lineas = [
     `Hola ${negocio.nombreCorto}, quiero pedir una cotización. Lo armé en la web:`,
     `• Vehículo: ${r.tamano.nombre}`,
@@ -52,6 +67,7 @@ export function mensajePresupuesto(negocio, r, nombre) {
     `• Tiempo en el taller: ${r.tiempo}`,
   ];
   if (nombre) lineas.push(`Nombre: ${nombre}`);
+  if (codigo) lineas.push(`Ref.: ${codigo}`);
   lineas.push('¿Cuándo puedo llevarlo a revisar?');
   return lineas.join('\n');
 }

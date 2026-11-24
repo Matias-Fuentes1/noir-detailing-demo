@@ -1,9 +1,17 @@
-# NOIR Detailing · Olavarría (demo v4)
+# NOIR Detailing · Olavarría (demo v5)
 
 Web de demostración para mostrarles a locales de detailing de Olavarría. La marca, los precios y las opiniones son de ejemplo.
 Acción principal: **pedir una cotización por WhatsApp**. Acción secundaria: el cotizador y las demos.
 
 Una sola página, todo oscuro, en 10 bloques: hero que se "pule" con el mouse o el dedo (con contador de brillo y "Pulir todo") · manifiesto · 01 Pulido (luz de inspección por etapas) · 02 Cerámico (agua sobre el panel) · 03 Servicios (bento) · 04 Resultados (antes/después + trabajos recientes) · 05 Proceso (tira LED) · 06 Presupuesto (cotizador → WhatsApp) · 07 Opiniones · 08 Contacto (datos + WhatsApp) + preguntas + mapa · footer con el wordmark.
+
+## Panel de administración (v5)
+
+Desde **`/admin`** el dueño del local edita textos, fotos, servicios, precios del cotizador, promociones, datos de contacto y SEO, y atiende las consultas que llegan desde el cotizador. Los datos viven en **Supabase** (base de datos, login de administradores y fotos), y la web se arma en cada visita con lo publicado.
+
+**Configuración, primer administrador y despliegue:** [docs/ADMIN.md](docs/ADMIN.md).
+
+Con Supabase configurado, `src/config/negocio.json` es solo el contenido inicial y el respaldo; lo que manda es lo que se publica desde el panel.
 
 ## Cómo correrla
 

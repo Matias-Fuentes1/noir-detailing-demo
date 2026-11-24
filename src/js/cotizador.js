@@ -1,11 +1,35 @@
 // Cotizador: calcula en vivo y termina en WhatsApp con el resumen armado.
+// Antes de abrir WhatsApp, la solicitud se manda a /api/consultas (queda en el panel). El envío es
+// "keepalive": no se espera la respuesta, así WhatsApp abre al instante y ningún bloqueador lo frena.
 import { calcular, pesos, mensajePresupuesto, linkWhatsApp } from './calculo.js';
+
+// Código corto y legible para cruzar el chat de WhatsApp con la consulta del panel (sin 0/O ni 1/I).
+export function nuevoCodigo() {
+  const letras = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const azar = crypto.getRandomValues(new Uint8Array(6));
+  return `N-${[...azar].map((b) => letras[b % letras.length]).join('')}`;
+}
+
+export function registrarConsulta(datos) {
+  if (document.querySelector('.aviso-preview')) return; // la vista previa del panel no genera consultas
+  try {
+    fetch('/api/consultas', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datos),
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    /* sin red o sin API: WhatsApp abre igual */
+  }
+}
 
 export function abrirWhatsApp(url) {
   const a = document.createElement('a');
   a.href = url;
   a.target = '_blank';
   a.rel = 'noopener';
+  a.dataset.lugar = 'cotizador'; // para la medición de clics en WhatsApp
   document.body.append(a);
   a.click();
   a.remove();
@@ -73,10 +97,10 @@ export function iniciarCotizador(negocio, { reducido }) {
       }),
     );
     tiempo.textContent = r.tiempo;
-    resumen.dataset.tamano = r.tamano.id;
+    resumen.dataset.tamano = r.tamano.silueta ?? r.tamano.id;
     linea.textContent = `${r.tamano.nombre} · ${r.principal.nombre} · ${r.estado.nombre}`;
     const i = Number(estado.value);
-    estado.setAttribute('aria-valuetext', estados[i].nombre);
+    estado.setAttribute('aria-valuetext', estados[i]?.nombre ?? '');
     marcas.forEach((m, j) => m.classList.toggle('activo', j === i));
     estadoNota.textContent = r.aplicaEstado ? 'Cuantas más marcas, más trabajo de pulido.' : 'No cambia el precio de este servicio.';
   }
@@ -90,7 +114,13 @@ export function iniciarCotizador(negocio, { reducido }) {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const nombre = form.querySelector('#cot-nombre').value.trim();
-    abrirWhatsApp(linkWhatsApp(negocio, mensajePresupuesto(negocio, ultimo ?? calcular(negocio, leer()), nombre)));
+    const telefono = form.querySelector('#cot-telefono')?.value.trim() ?? '';
+    const trampa = form.querySelector('input[name=web]')?.value ?? '';
+    const r = calcular(negocio, leer());
+    const codigo = nuevoCodigo();
+    const mensaje = mensajePresupuesto(negocio, r, nombre, codigo);
+    registrarConsulta({ codigo, nombre, telefono, web: trampa, seleccion: leer(), total: r.total, mensaje });
+    abrirWhatsApp(linkWhatsApp(negocio, mensaje));
   });
 
   mostrado = 0;

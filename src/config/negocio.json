@@ -1,74 +1,161 @@
 {
+  "version": 5,
+  "demo": {
+    "activo": true,
+    "aviso": "Demo · marca, precios y opiniones de ejemplo"
+  },
   "nombre": "NOIR Detailing",
   "nombreCorto": "NOIR",
+  "descripcion": "Pulido, tratamiento cerámico y detailing interior en Olavarría.",
   "ciudad": "Olavarría",
   "region": "Bs. As.",
   "lema": "Detailing en Olavarría",
-  "avisoDemo": "Demo · marca, precios y opiniones de ejemplo",
-
   "whatsapp": "549XXXXXXXXXX",
   "telefonoVisible": "2284 XX-XXXX",
+  "telefono": "",
   "email": "",
   "direccion": "Av. Colón 2500, Olavarría, Buenos Aires",
   "direccionCorta": "Av. Colón 2500",
-  "mapa": { "lat": -36.8927, "lng": -60.3225, "zoom": 15 },
+  "mapsUrl": "",
+  "mapa": {
+    "lat": -36.8927,
+    "lng": -60.3225,
+    "zoom": 15
+  },
   "horario": [
-    { "dias": "Lunes a viernes", "horas": "8:30–12:30 y 15–19" },
-    { "dias": "Sábados", "horas": "9–13" }
+    {
+      "dias": "Lunes a viernes",
+      "horas": "8:30–12:30 y 15–19"
+    },
+    {
+      "dias": "Sábados",
+      "horas": "9–13"
+    }
   ],
   "horarioCorto": "Lun a Vie 8:30–12:30 y 15–19 · Sáb 9–13",
-  "instagram": { "usuario": "@noir.detailing", "url": "https://www.instagram.com/" },
-
+  "instagram": {
+    "usuario": "@noir.detailing",
+    "url": "https://www.instagram.com/"
+  },
+  "redes": [],
   "mensajes": {
     "cotizacion": "Hola {nombreCorto}, quiero pedir una cotización.",
     "servicio": "Hola {nombreCorto}, quiero pedir una cotización de {servicio}."
   },
-
   "hero": {
-    "titulo": ["Más profundo", "que nuevo."],
+    "titulo": [
+      "Más profundo",
+      "que nuevo."
+    ],
     "bajada": "Pulido, tratamiento cerámico y detailing interior, a mano y bajo luz de estudio, en Olavarría.",
     "foto": "hero-coupe",
     "fotoAlt": "Coupé gris oscuro con la pintura brillante bajo las luces del taller",
-    "pista": "Pasá el mouse por el auto para pulirlo"
+    "pista": "Pasá el mouse por el auto para pulirlo",
+    "botones": [
+      {
+        "texto": "Calcular mi presupuesto",
+        "enlace": "#cotizador"
+      },
+      {
+        "texto": "Ver resultados",
+        "enlace": "#resultados"
+      }
+    ]
   },
-
   "manifiesto": {
-    "frase": ["No lavamos autos.", "Les devolvemos el reflejo."],
+    "frase": [
+      "No lavamos autos.",
+      "Les devolvemos el reflejo."
+    ],
     "foto": "nosotros/pulido-faro-oscuro",
     "fotoAlt": "Pulidora trabajando sobre el capó negro, junto al faro encendido",
     "datos": [
-      { "valor": "Sin cargo", "texto": "Revisión de pintura" },
-      { "valor": "Hasta 3 años", "texto": "De protección cerámica" },
-      { "valor": "2 días", "texto": "Corrección promedio en el taller" },
-      { "valor": "Lun a Sáb", "texto": "Con turno" }
+      {
+        "valor": "Sin cargo",
+        "texto": "Revisión de pintura"
+      },
+      {
+        "valor": "Hasta 3 años",
+        "texto": "De protección cerámica"
+      },
+      {
+        "valor": "2 días",
+        "texto": "Corrección promedio en el taller"
+      },
+      {
+        "valor": "Lun a Sáb",
+        "texto": "Con turno"
+      }
     ]
   },
-
   "pulido": {
-    "titulo": ["Las rayas se esconden", "en la luz."],
+    "titulo": [
+      "Las rayas se esconden",
+      "en la luz."
+    ],
     "texto": "Cada lavado con esponja o rodillo deja micro rayas. Con luz directa se ven como una telaraña alrededor del reflejo. Mové la luz y pasá por cada etapa.",
     "etapas": [
-      { "nombre": "Cómo llega", "titulo": "Cómo llega", "texto": "Micro rayas, hologramas y marcas de lavado. Con luz directa, la pintura parece una telaraña.", "defectos": 100 },
-      { "nombre": "Paso 1", "titulo": "Corte", "texto": "Un compuesto de corte nivela el barniz y saca las rayas más marcadas.", "defectos": 40 },
-      { "nombre": "Paso 2", "titulo": "Refinado", "texto": "Un pulido más fino borra las marcas que dejó el corte y recupera la profundidad.", "defectos": 12 },
-      { "nombre": "Paso 3", "titulo": "Terminación", "texto": "La pasada final deja el reflejo como un espejo, listo para proteger.", "defectos": 3 }
+      {
+        "nombre": "Cómo llega",
+        "titulo": "Cómo llega",
+        "texto": "Micro rayas, hologramas y marcas de lavado. Con luz directa, la pintura parece una telaraña.",
+        "defectos": 100
+      },
+      {
+        "nombre": "Paso 1",
+        "titulo": "Corte",
+        "texto": "Un compuesto de corte nivela el barniz y saca las rayas más marcadas.",
+        "defectos": 40
+      },
+      {
+        "nombre": "Paso 2",
+        "titulo": "Refinado",
+        "texto": "Un pulido más fino borra las marcas que dejó el corte y recupera la profundidad.",
+        "defectos": 12
+      },
+      {
+        "nombre": "Paso 3",
+        "titulo": "Terminación",
+        "texto": "La pasada final deja el reflejo como un espejo, listo para proteger.",
+        "defectos": 3
+      }
     ]
   },
-
   "ceramico": {
-    "titulo": ["El agua resbala.", "La mugre no se pega."],
+    "titulo": [
+      "El agua resbala.",
+      "La mugre no se pega."
+    ],
     "texto": "El cerámico deja una capa que repele el agua y la mugre. El auto se ensucia menos y se lava en la mitad de tiempo.",
     "modos": {
-      "con": { "angulo": "≈ 110°", "comportamiento": "Forma perlas y resbala" },
-      "sin": { "angulo": "≈ 70°", "comportamiento": "Se extiende y deja marca" }
+      "con": {
+        "angulo": "≈ 110°",
+        "comportamiento": "Forma perlas y resbala"
+      },
+      "sin": {
+        "angulo": "≈ 70°",
+        "comportamiento": "Se extiende y deja marca"
+      }
     },
     "duraciones": [
-      { "anios": "1 año", "paquete": "esencial", "texto": "Lavado, descontaminado y cerámico de una capa." },
-      { "anios": "2 años", "paquete": "completo", "texto": "Suma pulido de un paso antes de proteger." },
-      { "anios": "3 años", "paquete": "premium", "texto": "Corrección de dos pasos, cerámico y ópticas.", "destacado": true }
+      {
+        "anios": "1 año",
+        "paquete": "esencial",
+        "texto": "Lavado, descontaminado y cerámico de una capa."
+      },
+      {
+        "anios": "2 años",
+        "paquete": "completo",
+        "texto": "Suma pulido de un paso antes de proteger."
+      },
+      {
+        "anios": "3 años",
+        "paquete": "premium",
+        "texto": "Corrección de dos pasos, cerámico y ópticas.",
+        "destacado": true
+      }
     ]
   },
-
   "servicios": [
     {
       "id": "ceramico",
@@ -80,7 +167,10 @@
       "pintura": true,
       "foto": "servicios/tratamiento-ceramico",
       "fotoAlt": "Mano con guante puliendo el capó bordó de un auto, junto al faro",
-      "destacado": true
+      "destacado": true,
+      "precioCotizador": 280000,
+      "enCotizador": true,
+      "activo": true
     },
     {
       "id": "pulido",
@@ -91,7 +181,11 @@
       "dias": 2,
       "pintura": true,
       "foto": "servicios/pulido-correccion",
-      "fotoAlt": "Detailer con guantes negros pasando una pulidora roja sobre un capó oscuro"
+      "fotoAlt": "Detailer con guantes negros pasando una pulidora roja sobre un capó oscuro",
+      "precioCotizador": 180000,
+      "enCotizador": true,
+      "activo": true,
+      "destacado": false
     },
     {
       "id": "interior",
@@ -101,7 +195,11 @@
       "precio": 65000,
       "dias": 0,
       "foto": "servicios/detailing-interior",
-      "fotoAlt": "Interior de un auto con la puerta abierta, butacas y volante limpios bajo luz cálida"
+      "fotoAlt": "Interior de un auto con la puerta abierta, butacas y volante limpios bajo luz cálida",
+      "precioCotizador": 65000,
+      "enCotizador": true,
+      "activo": true,
+      "destacado": false
     },
     {
       "id": "lavado",
@@ -111,7 +209,11 @@
       "precio": 35000,
       "dias": 0,
       "foto": "servicios/lavado-premium",
-      "fotoAlt": "Cola de un auto negro mojado mientras lo enjuagan a presión"
+      "fotoAlt": "Cola de un auto negro mojado mientras lo enjuagan a presión",
+      "precioCotizador": 35000,
+      "enCotizador": true,
+      "activo": true,
+      "destacado": false
     },
     {
       "id": "opticas",
@@ -121,7 +223,11 @@
       "precio": 40000,
       "dias": 0,
       "foto": "servicios/opticas",
-      "fotoAlt": "Detailer limpiando el faro delantero de un auto negro con una microfibra"
+      "fotoAlt": "Detailer limpiando el faro delantero de un auto negro con una microfibra",
+      "precioCotizador": 40000,
+      "enCotizador": true,
+      "activo": true,
+      "destacado": false
     },
     {
       "id": "motor",
@@ -131,10 +237,13 @@
       "precio": 45000,
       "dias": 0,
       "foto": "servicios/motor-llantas",
-      "fotoAlt": "Llanta negra con cáliper amarillo de un auto deportivo gris en el taller"
+      "fotoAlt": "Llanta negra con cáliper amarillo de un auto deportivo gris en el taller",
+      "precioCotizador": 45000,
+      "enCotizador": true,
+      "activo": true,
+      "destacado": false
     }
   ],
-
   "paquetes": [
     {
       "id": "esencial",
@@ -142,7 +251,12 @@
       "precio": 150000,
       "dias": 1,
       "pintura": false,
-      "incluye": ["Lavado premium a mano", "Descontaminado de pintura", "Cerámico de 1 año"]
+      "incluye": [
+        "Lavado premium a mano",
+        "Descontaminado de pintura",
+        "Cerámico de 1 año"
+      ],
+      "activo": true
     },
     {
       "id": "completo",
@@ -150,7 +264,12 @@
       "precio": 320000,
       "dias": 2,
       "pintura": true,
-      "incluye": ["Todo lo de Esencial", "Pulido de un paso", "Cerámico de 2 años"]
+      "incluye": [
+        "Todo lo de Esencial",
+        "Pulido de un paso",
+        "Cerámico de 2 años"
+      ],
+      "activo": true
     },
     {
       "id": "premium",
@@ -158,34 +277,117 @@
       "precio": 520000,
       "dias": 3,
       "pintura": true,
-      "incluye": ["Todo lo de Completo", "Corrección de dos pasos", "Cerámico de 3 años", "Ópticas"]
+      "incluye": [
+        "Todo lo de Completo",
+        "Corrección de dos pasos",
+        "Cerámico de 3 años",
+        "Ópticas"
+      ],
+      "activo": true
     }
   ],
-
   "cotizador": {
-    "porDefecto": { "tamano": "mediano", "principal": "completo", "estado": 1 },
+    "porDefecto": {
+      "tamano": "mediano",
+      "principal": "completo",
+      "estado": 1
+    },
     "tamanos": [
-      { "id": "chico", "nombre": "Chico", "ejemplo": "Gol, Onix, 208", "multiplicador": 1 },
-      { "id": "mediano", "nombre": "Mediano", "ejemplo": "Cronos, Corolla, Vento", "multiplicador": 1.15 },
-      { "id": "suv", "nombre": "SUV", "ejemplo": "Tracker, Hilux, Amarok", "multiplicador": 1.3 },
-      { "id": "grande", "nombre": "Grande", "ejemplo": "Sprinter, Master, Kangoo", "multiplicador": 1.45 }
+      {
+        "id": "chico",
+        "nombre": "Chico",
+        "ejemplo": "Gol, Onix, 208",
+        "multiplicador": 1,
+        "silueta": "chico",
+        "activo": true
+      },
+      {
+        "id": "mediano",
+        "nombre": "Mediano",
+        "ejemplo": "Cronos, Corolla, Vento",
+        "multiplicador": 1.15,
+        "silueta": "mediano",
+        "activo": true
+      },
+      {
+        "id": "suv",
+        "nombre": "SUV",
+        "ejemplo": "Tracker, Hilux, Amarok",
+        "multiplicador": 1.3,
+        "silueta": "suv",
+        "activo": true
+      },
+      {
+        "id": "grande",
+        "nombre": "Grande",
+        "ejemplo": "Sprinter, Master, Kangoo",
+        "multiplicador": 1.45,
+        "silueta": "grande",
+        "activo": true
+      }
     ],
     "estados": [
-      { "nombre": "Como nuevo", "recargo": 0 },
-      { "nombre": "Uso diario", "recargo": 0.1 },
-      { "nombre": "Muy castigado", "recargo": 0.25, "diasExtra": 1 }
+      {
+        "nombre": "Como nuevo",
+        "recargo": 0,
+        "id": "nuevo",
+        "diasExtra": 0
+      },
+      {
+        "nombre": "Uso diario",
+        "recargo": 0.1,
+        "id": "uso-diario",
+        "diasExtra": 0
+      },
+      {
+        "nombre": "Muy castigado",
+        "recargo": 0.25,
+        "diasExtra": 1,
+        "id": "castigado"
+      }
     ],
     "extras": [
-      { "id": "interior", "nombre": "Interior a fondo", "precio": 45000, "dias": 0.5 },
-      { "id": "opticas", "nombre": "Ópticas", "precio": 35000, "dias": 0 },
-      { "id": "motor", "nombre": "Motor", "precio": 30000, "dias": 0 },
-      { "id": "llantas", "nombre": "Llantas y cálipers", "precio": 40000, "dias": 0 },
-      { "id": "vidrios", "nombre": "Vidrios hidrofóbicos", "precio": 30000, "dias": 0 }
+      {
+        "id": "interior",
+        "nombre": "Interior a fondo",
+        "precio": 45000,
+        "dias": 0.5,
+        "activo": true
+      },
+      {
+        "id": "opticas",
+        "nombre": "Ópticas",
+        "precio": 35000,
+        "dias": 0,
+        "activo": true
+      },
+      {
+        "id": "motor",
+        "nombre": "Motor",
+        "precio": 30000,
+        "dias": 0,
+        "activo": true
+      },
+      {
+        "id": "llantas",
+        "nombre": "Llantas y cálipers",
+        "precio": 40000,
+        "dias": 0,
+        "activo": true
+      },
+      {
+        "id": "vidrios",
+        "nombre": "Vidrios hidrofóbicos",
+        "precio": 30000,
+        "dias": 0,
+        "activo": true
+      }
     ],
     "redondeo": 1000,
-    "nota": "Precio final después de revisar la pintura, sin cargo."
+    "nota": "Precio final después de revisar la pintura, sin cargo.",
+    "condiciones": "Presupuesto orientativo. El precio final se confirma al revisar el auto.",
+    "privacidad": "Guardamos lo que elegiste, tu nombre y tu teléfono (si los dejás) solo para responderte. No los compartimos."
   },
-
   "resultados": [
     {
       "id": "pintura",
@@ -193,55 +395,256 @@
       "antes": "pintura-antes",
       "despues": "pintura-despues",
       "alt": "Panel de pintura negra",
-      "pie": "Capó negro · pulido de dos pasos"
+      "pie": "Capó negro · pulido de dos pasos",
+      "categoria": "pintura",
+      "visible": true
     },
     {
       "id": "interior",
       "nombre": "Interior",
       "despues": "interior-cuero",
       "alt": "Butaca de cuero negro",
-      "pie": "Butaca de cuero · limpieza e hidratación"
+      "pie": "Butaca de cuero · limpieza e hidratación",
+      "categoria": "interior",
+      "visible": true
     },
     {
       "id": "llantas",
       "nombre": "Llantas",
       "despues": "servicios/motor-llantas",
       "alt": "Llanta negra con cáliper amarillo",
-      "pie": "Llanta y cáliper · descontaminado y sellado"
+      "pie": "Llanta y cáliper · descontaminado y sellado",
+      "categoria": "llantas",
+      "visible": true
     }
   ],
-
   "trabajos": [
-    { "auto": "Coupé negra", "servicio": "Pulido de dos pasos", "foto": "trabajos/trabajo-1", "fotoAlt": "Frente de una coupé negra con el faro y el capó pulidos" },
-    { "auto": "Sedán blanco", "servicio": "Tratamiento cerámico", "foto": "trabajos/trabajo-2", "fotoAlt": "Cola de un sedán blanco con la pintura brillante en el taller" },
-    { "auto": "Deportivo negro", "servicio": "Lavado premium", "foto": "trabajos/trabajo-3", "fotoAlt": "Deportivo negro cubierto de espuma en un taller oscuro" }
+    {
+      "auto": "Coupé negra",
+      "servicio": "Pulido de dos pasos",
+      "foto": "trabajos/trabajo-1",
+      "fotoAlt": "Frente de una coupé negra con el faro y el capó pulidos",
+      "id": "trabajo-1",
+      "descripcion": "",
+      "categoria": "pintura",
+      "destacado": true,
+      "visible": true,
+      "ejemplo": true
+    },
+    {
+      "auto": "Sedán blanco",
+      "servicio": "Tratamiento cerámico",
+      "foto": "trabajos/trabajo-2",
+      "fotoAlt": "Cola de un sedán blanco con la pintura brillante en el taller",
+      "id": "trabajo-2",
+      "descripcion": "",
+      "categoria": "ceramico",
+      "destacado": false,
+      "visible": true,
+      "ejemplo": true
+    },
+    {
+      "auto": "Deportivo negro",
+      "servicio": "Lavado premium",
+      "foto": "trabajos/trabajo-3",
+      "fotoAlt": "Deportivo negro cubierto de espuma en un taller oscuro",
+      "id": "trabajo-3",
+      "descripcion": "",
+      "categoria": "lavado",
+      "destacado": false,
+      "visible": true,
+      "ejemplo": true
+    }
   ],
-
   "proceso": [
-    { "titulo": "Revisar", "texto": "Miramos la pintura con luz y medidor de espesor, y te mostramos lo que vemos.", "foto": "proceso/1-revision", "fotoAlt": "Detailer rociando producto sobre el lateral de un auto naranja para revisarlo" },
-    { "titulo": "Descontaminar", "texto": "Espuma, lavado a mano, removedor de hierro y clay bar.", "foto": "proceso/2-lavado-descontaminado", "fotoAlt": "Frente de un auto oscuro cubierto de espuma durante el lavado" },
-    { "titulo": "Corregir", "texto": "El pulido que necesite tu pintura, ni más ni menos.", "foto": "proceso/3-correccion", "fotoAlt": "Pulidora roja trabajando sobre el capó de un auto oscuro" },
-    { "titulo": "Proteger", "texto": "Cerámico o sellador, según lo que elijas.", "foto": "proceso/4-proteccion", "fotoAlt": "Mano con guante pasando una microfibra sobre la pintura negra" },
-    { "titulo": "Entregar", "texto": "Lo revisamos juntos bajo la luz y te explicamos cómo cuidarlo.", "foto": "proceso/5-entrega", "fotoAlt": "Auto negro terminado, con la pintura y las llantas brillantes" }
+    {
+      "titulo": "Revisar",
+      "texto": "Miramos la pintura con luz y medidor de espesor, y te mostramos lo que vemos.",
+      "foto": "proceso/1-revision",
+      "fotoAlt": "Detailer rociando producto sobre el lateral de un auto naranja para revisarlo",
+      "id": "revisar"
+    },
+    {
+      "titulo": "Descontaminar",
+      "texto": "Espuma, lavado a mano, removedor de hierro y clay bar.",
+      "foto": "proceso/2-lavado-descontaminado",
+      "fotoAlt": "Frente de un auto oscuro cubierto de espuma durante el lavado",
+      "id": "descontaminar"
+    },
+    {
+      "titulo": "Corregir",
+      "texto": "El pulido que necesite tu pintura, ni más ni menos.",
+      "foto": "proceso/3-correccion",
+      "fotoAlt": "Pulidora roja trabajando sobre el capó de un auto oscuro",
+      "id": "corregir"
+    },
+    {
+      "titulo": "Proteger",
+      "texto": "Cerámico o sellador, según lo que elijas.",
+      "foto": "proceso/4-proteccion",
+      "fotoAlt": "Mano con guante pasando una microfibra sobre la pintura negra",
+      "id": "proteger"
+    },
+    {
+      "titulo": "Entregar",
+      "texto": "Lo revisamos juntos bajo la luz y te explicamos cómo cuidarlo.",
+      "foto": "proceso/5-entrega",
+      "fotoAlt": "Auto negro terminado, con la pintura y las llantas brillantes",
+      "id": "entregar"
+    }
   ],
-
   "opiniones": [
-    { "nombre": "Martín G.", "auto": "Toyota Hilux", "estrellas": 5, "texto": "Me mostraron las rayas con la luz antes de empezar y me pasaron el precio por WhatsApp. Quedó mejor que cuando la saqué de la concesionaria." },
-    { "nombre": "Carolina R.", "auto": "Peugeot 208", "estrellas": 5, "texto": "Le hice el cerámico hace unos meses y ahora lo lavo en un rato. El agua se va sola." },
-    { "nombre": "Diego F.", "auto": "VW Amarok", "estrellas": 5, "texto": "El interior tenía años de campo y quedó como nuevo. Me explicaron qué productos usar." },
-    { "nombre": "Lucía M.", "auto": "Fiat Cronos", "estrellas": 5, "texto": "Puntuales con la entrega y muy prolijos. Los faros parecen nuevos." }
+    {
+      "nombre": "Martín G.",
+      "auto": "Toyota Hilux",
+      "estrellas": 5,
+      "texto": "Me mostraron las rayas con la luz antes de empezar y me pasaron el precio por WhatsApp. Quedó mejor que cuando la saqué de la concesionaria.",
+      "id": "opinion-1",
+      "foto": null,
+      "visible": true,
+      "ejemplo": true
+    },
+    {
+      "nombre": "Carolina R.",
+      "auto": "Peugeot 208",
+      "estrellas": 5,
+      "texto": "Le hice el cerámico hace unos meses y ahora lo lavo en un rato. El agua se va sola.",
+      "id": "opinion-2",
+      "foto": null,
+      "visible": true,
+      "ejemplo": true
+    },
+    {
+      "nombre": "Diego F.",
+      "auto": "VW Amarok",
+      "estrellas": 5,
+      "texto": "El interior tenía años de campo y quedó como nuevo. Me explicaron qué productos usar.",
+      "id": "opinion-3",
+      "foto": null,
+      "visible": true,
+      "ejemplo": true
+    },
+    {
+      "nombre": "Lucía M.",
+      "auto": "Fiat Cronos",
+      "estrellas": 5,
+      "texto": "Puntuales con la entrega y muy prolijos. Los faros parecen nuevos.",
+      "id": "opinion-4",
+      "foto": null,
+      "visible": true,
+      "ejemplo": true
+    }
   ],
   "opinionesNota": "Opiniones de ejemplo para la demo.",
-
-  "contacto": {
-    "titulo": ["Vení a", "conocernos."]
-  },
-
   "preguntas": [
-    { "pregunta": "¿Cuánto dura el cerámico?", "respuesta": "Entre 1 y 3 años, según el paquete que elijas y cómo lo cuides. Te dejamos por escrito qué hacer y qué evitar." },
-    { "pregunta": "¿Cuánto tarda cada servicio?", "respuesta": "Un lavado premium lleva unas 2 horas y un interior unas 4. El pulido lleva de 1 a 2 días y el cerámico de 2 a 3, porque necesita tiempo de curado." },
-    { "pregunta": "¿Puedo esperar mientras lo hacen?", "respuesta": "Sí, en los servicios de pocas horas (lavado, ópticas, motor). Para pulido y cerámico te avisamos por WhatsApp cuando está listo." },
-    { "pregunta": "¿Cuándo puedo lavar el auto después del cerámico?", "respuesta": "Esperá 7 días antes del primer lavado. Después, lavalo a mano con shampoo neutro y evitá los rodillos." },
-    { "pregunta": "¿Qué medios de pago aceptan?", "respuesta": "Efectivo, transferencia, débito, crédito y Mercado Pago." }
-  ]
+    {
+      "pregunta": "¿Cuánto dura el cerámico?",
+      "respuesta": "Entre 1 y 3 años, según el paquete que elijas y cómo lo cuides. Te dejamos por escrito qué hacer y qué evitar.",
+      "id": "pregunta-1"
+    },
+    {
+      "pregunta": "¿Cuánto tarda cada servicio?",
+      "respuesta": "Un lavado premium lleva unas 2 horas y un interior unas 4. El pulido lleva de 1 a 2 días y el cerámico de 2 a 3, porque necesita tiempo de curado.",
+      "id": "pregunta-2"
+    },
+    {
+      "pregunta": "¿Puedo esperar mientras lo hacen?",
+      "respuesta": "Sí, en los servicios de pocas horas (lavado, ópticas, motor). Para pulido y cerámico te avisamos por WhatsApp cuando está listo.",
+      "id": "pregunta-3"
+    },
+    {
+      "pregunta": "¿Cuándo puedo lavar el auto después del cerámico?",
+      "respuesta": "Esperá 7 días antes del primer lavado. Después, lavalo a mano con shampoo neutro y evitá los rodillos.",
+      "id": "pregunta-4"
+    },
+    {
+      "pregunta": "¿Qué medios de pago aceptan?",
+      "respuesta": "Efectivo, transferencia, débito, crédito y Mercado Pago.",
+      "id": "pregunta-5"
+    }
+  ],
+  "seo": {
+    "titulo": "NOIR Detailing · Olavarría",
+    "descripcion": "NOIR Detailing: pulido, tratamiento cerámico y detailing interior en Olavarría. Calculá tu presupuesto y pedí cotización por WhatsApp.",
+    "imagen": null,
+    "favicon": null
+  },
+  "secciones": {
+    "servicios": {
+      "visible": true,
+      "titulo": [
+        "Todo lo que tu auto",
+        "se merece."
+      ],
+      "texto": "Precios desde, para un auto chico. El valor final depende del tamaño y del estado de la pintura."
+    },
+    "promociones": {
+      "visible": true,
+      "titulo": [
+        "Promociones",
+        "por tiempo limitado."
+      ],
+      "texto": ""
+    },
+    "resultados": {
+      "visible": true,
+      "titulo": [
+        "De cansado",
+        "a terminado."
+      ],
+      "texto": "Arrastrá la línea, o usá las flechas del teclado, para comparar el antes y el después."
+    },
+    "trabajos": {
+      "visible": true,
+      "titulo": "Trabajos recientes",
+      "maximo": 6
+    },
+    "proceso": {
+      "visible": true,
+      "titulo": [
+        "Cinco pasos.",
+        "Cero sorpresas."
+      ]
+    },
+    "cotizador": {
+      "visible": true,
+      "titulo": [
+        "Armalo.",
+        "Mirá el precio."
+      ],
+      "texto": "Elegí tu auto y lo que querés hacerle. El precio cambia al instante y lo mandás por WhatsApp."
+    },
+    "opiniones": {
+      "visible": true,
+      "titulo": [
+        "Te lo devolvemos",
+        "impecable."
+      ]
+    },
+    "contacto": {
+      "visible": true,
+      "titulo": [
+        "Vení a",
+        "conocernos."
+      ],
+      "texto": ""
+    },
+    "preguntas": {
+      "visible": true,
+      "titulo": "Preguntas frecuentes"
+    },
+    "manifiesto": {
+      "visible": true
+    },
+    "pulido": {
+      "visible": true
+    },
+    "ceramico": {
+      "visible": true
+    },
+    "mapa": {
+      "visible": true
+    }
+  },
+  "promociones": []
 }

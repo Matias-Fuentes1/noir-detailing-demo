@@ -1,8 +1,10 @@
-// Arma todo el HTML de la página desde src/config/negocio.json.
-// Se ejecuta en Vite (dev y build), así el contenido queda en el HTML y se ve sin JavaScript.
+// Arma todo el HTML de la página desde el contenido (Supabase o, si no hay, src/config/negocio.json).
+// Corre en el build de Vite (versión estática de respaldo) y en el servidor (api/pagina.js) en cada visita,
+// así el contenido queda en el HTML y se ve aunque el JavaScript no cargue.
 // Orden de bloques: hero · manifiesto · 01 pulido · 02 cerámico · 03 servicios · 04 resultados ·
 // 05 proceso · 06 presupuesto · 07 opiniones · 08 contacto + preguntas · footer.
-import { calcular, pesos, linkWhatsApp, opcionesPrincipales, completar, esNumeroEjemplo } from '../src/js/calculo.js';
+import { calcular, pesos, linkWhatsApp, opcionesPrincipales, completar, esNumeroEjemplo, tamanosActivos, extrasActivos } from '../src/js/calculo.js';
+import { normalizar, promoVigente, datosCliente } from '../src/js/contenido.js';
 import { icono } from './iconos.mjs';
 
 const esc = (s = '') =>
@@ -21,8 +23,17 @@ const SILUETAS = {
 const silueta = (id, clase = '') =>
   `<svg class="silueta ${clase}" viewBox="0 0 124 48" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${SILUETAS[id] ?? SILUETAS.mediano}</svg>`;
 
-export function renderPagina(html, negocio, imagenes) {
-  const n = negocio;
+// Marcadores que delimitan lo que se re-renderiza en el servidor sobre la plantilla del build.
+export const MARCAS = { headIni: '<!--@head:ini-->', headFin: '<!--@head:fin-->', cuerpoIni: '<!--@cuerpo:ini-->', cuerpoFin: '<!--@cuerpo:fin-->' };
+
+// JSON seguro para incrustar en <script type="application/json">.
+const jsonSeguro = (v) => JSON.stringify(v).replace(/</g, '\u003c').replace(/>/g, '\u003e').replace(/&/g, '\u0026');
+
+export function renderPagina(html, negocio, imagenes = {}, opciones = {}) {
+  const n = normalizar(negocio);
+  const sec = n.secciones;
+  const ver = (k) => sec[k]?.visible !== false;
+  const hoy = opciones.hoy ?? new Date();
   const wa = (texto) => esc(linkWhatsApp(n, texto));
   const waCotizacion = wa(completar(n.mensajes.cotizacion, n));
   const ejemplo = esNumeroEjemplo(n);
@@ -32,21 +43,33 @@ export function renderPagina(html, negocio, imagenes) {
 
   // Foto con srcset (800 y 1600 px). Si falta, avisa en la consola del build y deja un panel liso.
   const foto = (nombre, alt, { sizes = '100vw', eager = false, clase = '', decorativa = false } = {}) => {
-    const datos = imagenes[nombre];
+    const carga = eager ? 'fetchpriority="high"' : 'loading="lazy"';
+    if (nombre && typeof nombre === 'object') {
+      // Foto subida desde el panel (Supabase Storage), con versión de 800 px.
+      const chico = Math.min(800, nombre.w);
+      return `<img class="${clase}" src="${esc(nombre.src)}" srcset="${esc(nombre.src800)} ${chico}w, ${esc(nombre.src)} ${nombre.w}w" sizes="${sizes}" width="${nombre.w}" height="${nombre.h}" alt="${decorativa ? '' : esc(alt)}" ${carga} decoding="async">`;
+    }
+    const datos = nombre ? imagenes[nombre] : null;
     if (!datos) {
-      console.warn(`[pagina] Falta la foto "${nombre}" en fotos/. Se muestra un panel liso.`);
+      if (nombre && !opciones.silencioso) console.warn(`[pagina] Falta la foto "${nombre}" en fotos/. Se muestra un panel liso.`);
       return `<div class="ph ${clase}"${decorativa ? ' aria-hidden="true"' : ` role="img" aria-label="${esc(alt)}"`}></div>`;
     }
     const chico = Math.min(800, datos.w);
-    return `<img class="${clase}" src="/img/${nombre}.webp" srcset="/img/${nombre}-800.webp ${chico}w, /img/${nombre}.webp ${datos.w}w" sizes="${sizes}" width="${datos.w}" height="${datos.h}" alt="${decorativa ? '' : esc(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
+    return `<img class="${clase}" src="/img/${nombre}.webp" srcset="/img/${nombre}-800.webp ${chico}w, /img/${nombre}.webp ${datos.w}w" sizes="${sizes}" width="${datos.w}" height="${datos.h}" alt="${decorativa ? '' : esc(alt)}" ${carga} decoding="async">`;
   };
+  const urlFoto = (f) => (!f ? '' : typeof f === 'object' ? f.src : imagenes[f] ? `/img/${f}.webp` : '');
 
   // Título de dos líneas: la primera sólida, la segunda en outline. Cada línea entra con máscara.
   const titulo = ([l1, l2], { tag = 'h2', id = '', clase = '' } = {}) =>
     `<${tag} class="titulo ${clase}"${id ? ` id="${id}"` : ''}><span class="linea"><span>${esc(l1)}</span></span>${l2 ? ` <span class="linea linea-2"><span>${esc(l2)}</span></span>` : ''}</${tag}>`;
 
-  // Etiqueta "— 01 · PULIDO" sobre cada h2 (numeración correlativa).
-  const etiqueta = (num, texto) => `<p class="etiqueta"><span>${dos(num)}</span> · ${esc(texto)}</p>`;
+  // Etiqueta "— 01 · PULIDO" sobre cada h2. La numeración salta las secciones ocultas.
+  const numeradas = ['pulido', 'ceramico', 'servicios', 'promociones', 'resultados', 'proceso', 'cotizador', 'opiniones', 'contacto'];
+  const promos = n.promociones.filter((x) => promoVigente(x, hoy));
+  const hayContenido = { promociones: promos.length > 0 };
+  const numeros = {};
+  numeradas.filter((k) => ver(k) && hayContenido[k] !== false).forEach((k, i) => { numeros[k] = i + 1; });
+  const etiqueta = (num, texto) => `<p class="etiqueta"><span>${dos(typeof num === 'string' ? numeros[num] : num)}</span> · ${esc(texto)}</p>`;
 
   const cabecera = ({ num, nombre, t, id, texto, clase = '' }) => `
       <div class="cabecera ${clase}">
@@ -57,12 +80,14 @@ export function renderPagina(html, negocio, imagenes) {
   const marca = `<a class="brand" href="#inicio" aria-label="${esc(n.nombre)}, ir al inicio"><span class="brand-name">${esc(n.nombreCorto)}</span><span class="brand-sub">Detailing · ${esc(n.ciudad)}</span></a>`;
 
   const links = [
-    ['#pulido', 'Pulido'],
-    ['#ceramico', 'Cerámico'],
-    ['#servicios', 'Servicios'],
-    ['#resultados', 'Resultados'],
-    ['#cotizador', 'Presupuesto'],
-  ];
+    ['pulido', 'Pulido'],
+    ['ceramico', 'Cerámico'],
+    ['servicios', 'Servicios'],
+    ['resultados', 'Resultados'],
+    ['cotizador', 'Presupuesto'],
+  ]
+    .filter(([k]) => ver(k))
+    .map(([k, t]) => [`#${k}`, t]);
 
   // ---------- Header ----------
   const header = `
@@ -95,8 +120,14 @@ export function renderPagina(html, negocio, imagenes) {
       <p class="hero-bajada">${esc(h.bajada)}</p>
       <div class="hero-acciones">
         <div class="botones">
-          <a class="btn btn-acento" href="#cotizador">Calcular mi presupuesto ${flecha}</a>
-          <a class="btn btn-borde" href="#resultados">Ver resultados</a>
+          ${h.botones
+            .filter((b) => b.texto)
+            .map((b, i) => {
+              const destino = b.enlace === 'whatsapp' ? linkWhatsApp(n, completar(n.mensajes.cotizacion, n)) : b.enlace || '#cotizador';
+              const externo = /^https?:/i.test(destino);
+              return `<a class="btn ${i === 0 ? 'btn-acento' : 'btn-borde'}" href="${esc(destino)}"${externo ? ` ${ext}` : ''}>${esc(b.texto)}${i === 0 ? ` ${flecha}` : ''}</a>`;
+            })
+            .join('')}
         </div>
         <div class="hero-pulido solo-js">
           <div class="pulido-medidor">
@@ -112,7 +143,7 @@ export function renderPagina(html, negocio, imagenes) {
 
   // ---------- Manifiesto ----------
   const m = n.manifiesto;
-  const manifiesto = `
+  const manifiesto = !ver('manifiesto') ? '' : `
   <section class="section manifiesto" id="nosotros" aria-labelledby="manifiesto-titulo">
     <div class="wrap">
       <div class="manif-grid">
@@ -128,11 +159,11 @@ export function renderPagina(html, negocio, imagenes) {
   // ---------- 01 · Pulido ----------
   const p = n.pulido;
   const e0 = p.etapas[0];
-  const pulido = `
+  const pulido = !ver('pulido') || !p.etapas.length ? '' : `
   <section class="section" id="pulido" aria-labelledby="pulido-titulo">
     <div class="wrap pulido-grid">
       <div class="pulido-copy">
-        ${etiqueta(1, 'Pulido')}
+        ${etiqueta('pulido', 'Pulido')}
         ${titulo(p.titulo, { id: 'pulido-titulo' })}
         <p class="lead">${esc(p.texto)}</p>
         <div class="selector" role="group" aria-label="Etapas del pulido">
@@ -157,7 +188,7 @@ export function renderPagina(html, negocio, imagenes) {
 
   // ---------- 02 · Cerámico ----------
   const c = n.ceramico;
-  const ceramico = `
+  const ceramico = !ver('ceramico') ? '' : `
   <section class="section" id="ceramico" aria-labelledby="ceramico-titulo">
     <div class="wrap">
       <div class="ceramico-grid">
@@ -168,7 +199,7 @@ export function renderPagina(html, negocio, imagenes) {
           <figcaption class="panel-hud"><span class="dato" id="agua-rotulo">Con cerámico</span><span class="dato">Simulación</span></figcaption>
         </figure>
         <div class="ceramico-copy">
-          ${etiqueta(2, 'Cerámico')}
+          ${etiqueta('ceramico', 'Cerámico')}
           ${titulo(c.titulo, { id: 'ceramico-titulo' })}
           <p class="lead">${esc(c.texto)}</p>
           <div class="agua-controles solo-js">
@@ -188,7 +219,8 @@ export function renderPagina(html, negocio, imagenes) {
       <ul class="duraciones" aria-label="Duración del cerámico según el paquete">
         ${c.duraciones
           .map((d) => {
-            const pk = n.paquetes.find((x) => x.id === d.paquete);
+            const pk = n.paquetes.find((x) => x.id === d.paquete && x.activo);
+            if (!pk || !ver('cotizador')) return `<li><div class="duracion panel${d.destacado ? ' duracion-destacada' : ''}"><span class="duracion-anios">${esc(d.anios)}</span><span class="duracion-texto">${esc(d.texto)}</span></div></li>`;
             return `<li><a class="duracion panel${d.destacado ? ' duracion-destacada' : ''}" href="#cotizador" data-preset="${esc(d.paquete)}"><span class="duracion-anios">${esc(d.anios)}</span><span class="duracion-paquete">${esc(pk?.nombre ?? '')}</span><span class="duracion-texto">${esc(d.texto)}</span><span class="duracion-link">Calcular mi presupuesto ${flecha}</span></a></li>`;
           })
           .join('')}
@@ -197,16 +229,21 @@ export function renderPagina(html, negocio, imagenes) {
   </section>`;
 
   // ---------- 03 · Servicios ----------
-  const servicios = `
+  // Activos, en el orden del panel; el destacado ocupa la tarjeta grande (va primero).
+  const serviciosVisibles = [...n.servicios.filter((s) => s.activo)].sort((a, b) => Number(b.destacado) - Number(a.destacado));
+  const enCotizador = new Set(opcionesPrincipales(n).map((o) => o.id));
+  // Si el servicio no está en el cotizador, la tarjeta abre WhatsApp con el pedido armado.
+  const presetServicio = (s) => (ver('cotizador') && enCotizador.has(s.id) ? '#cotizador' : wa(completar(n.mensajes.servicio, { servicio: s.nombre.toLowerCase() }, n)));
+  const servicios = !ver('servicios') || !serviciosVisibles.length ? '' : `
   <section class="section" id="servicios" aria-labelledby="servicios-titulo">
     <div class="wrap">
-      ${cabecera({ num: 3, nombre: 'Servicios', t: ['Todo lo que tu auto', 'se merece.'], id: 'servicios-titulo', texto: 'Precios desde, para un auto chico. El valor final depende del tamaño y del estado de la pintura.' })}
+      ${cabecera({ num: 'servicios', nombre: 'Servicios', t: sec.servicios.titulo, id: 'servicios-titulo', texto: sec.servicios.texto })}
       <ul class="bento">
-        ${n.servicios
+        ${serviciosVisibles
           .map(
             (s, i) => `
         <li class="bento-item${i === 0 ? ' bento-grande' : ''}">
-          <a class="servicio" href="#cotizador" data-preset="${esc(s.id)}">
+          <a class="servicio" href="${presetServicio(s)}" data-preset="${esc(s.id)}">
             ${foto(s.foto, s.fotoAlt, { sizes: i === 0 ? '(min-width: 1100px) 62vw, 92vw' : '(min-width: 1100px) 30vw, (min-width: 700px) 46vw, 92vw', clase: 'servicio-foto' })}
             <span class="servicio-cuerpo">
               <span class="dato servicio-num">${dos(i + 1)}</span>
@@ -223,15 +260,46 @@ export function renderPagina(html, negocio, imagenes) {
     </div>
   </section>`;
 
+  // ---------- Promociones (solo si hay alguna vigente) ----------
+  const promociones = !ver('promociones') || !promos.length ? '' : `
+  <section class="section" id="promociones" aria-labelledby="promociones-titulo">
+    <div class="wrap">
+      ${cabecera({ num: 'promociones', nombre: 'Promociones', t: sec.promociones.titulo, id: 'promociones-titulo', texto: sec.promociones.texto })}
+      <ul class="promos">
+        ${promos
+          .map((pr) => {
+            const destino = pr.preset && ver('cotizador') && enCotizador.has(pr.preset) ? '#cotizador' : wa(completar(n.mensajes.servicio, { servicio: pr.titulo.toLowerCase() }, n));
+            const externo = destino.startsWith('http');
+            return `
+        <li>
+          <article class="promo panel">
+            ${pr.foto ? `<div class="promo-foto">${foto(pr.foto, pr.fotoAlt || pr.titulo, { sizes: '(min-width: 900px) 40vw, 92vw' })}</div>` : ''}
+            <div class="promo-cuerpo">
+              <h3 class="promo-titulo">${esc(pr.titulo)}</h3>
+              ${pr.descripcion ? `<p class="promo-texto">${esc(pr.descripcion)}</p>` : ''}
+              ${pr.precio != null ? `<p class="promo-precio">${pr.precioAnterior != null ? `<s class="dato">${pesos(pr.precioAnterior)}</s> ` : ''}<strong>${pesos(pr.precio)}</strong></p>` : ''}
+              ${pr.hasta ? `<p class="dato promo-vence">Hasta el ${esc(pr.hasta.split('-').reverse().join('/'))}</p>` : ''}
+              <a class="link-flecha" href="${esc(destino)}"${pr.preset && destino === '#cotizador' ? ` data-preset="${esc(pr.preset)}"` : ''}${externo ? ` ${ext}` : ''}>${destino === '#cotizador' ? 'Calcular mi presupuesto' : 'Pedir cotización'} ${flecha}</a>
+            </div>
+          </article>
+        </li>`;
+          })
+          .join('')}
+      </ul>
+    </div>
+  </section>`;
+
   // ---------- 04 · Resultados ----------
-  const r0 = n.resultados[0];
-  const resultados = `
+  const resultadosVisibles = n.resultados.filter((r) => r.visible && r.despues);
+  const trabajosVisibles = [...n.trabajos.filter((t) => t.visible)].sort((a, b) => Number(b.destacado) - Number(a.destacado)).slice(0, Math.max(1, Number(sec.trabajos.maximo) || 6));
+  const r0 = resultadosVisibles[0];
+  const bloqueResultados = !ver('resultados') || !r0 ? '' : `
   <section class="section" id="resultados" aria-labelledby="resultados-titulo">
     <div class="wrap">
-      ${cabecera({ num: 4, nombre: 'Resultados', t: ['De cansado', 'a terminado.'], id: 'resultados-titulo', texto: 'Arrastrá la línea, o usá las flechas del teclado, para comparar el antes y el después.' })}
+      ${cabecera({ num: 'resultados', nombre: 'Resultados', t: sec.resultados.titulo, id: 'resultados-titulo', texto: sec.resultados.texto })}
       <div class="resultados-grid">
         <figure class="comparador panel" id="comparador" style="--split:50%">
-          ${n.resultados
+          ${resultadosVisibles
             .map(
               (r, i) => `
           <div class="par" data-par="${esc(r.id)}"${i ? ' hidden' : ''}>
@@ -245,36 +313,44 @@ export function renderPagina(html, negocio, imagenes) {
           <input class="comp-range" type="range" min="0" max="100" value="50" aria-label="Comparar antes y después">
         </figure>
         <div class="selector selector-vertical solo-js" role="group" aria-label="Elegí qué comparar">
-          ${n.resultados.map((r, i) => `<button type="button" class="selector-op" data-par="${esc(r.id)}" aria-pressed="${i === 0}">${esc(r.nombre)}</button>`).join('')}
+          ${resultadosVisibles.map((r, i) => `<button type="button" class="selector-op" data-par="${esc(r.id)}" aria-pressed="${i === 0}">${esc(r.nombre)}</button>`).join('')}
         </div>
       </div>
-      <p class="comp-pie dato" id="comp-pie" aria-live="polite">${esc(r0.pie)}</p>
-
+      <p class="comp-pie dato" id="comp-pie" aria-live="polite">${esc(r0.pie)}</p>`;
+  const bloqueTrabajos = !ver('trabajos') || !trabajosVisibles.length ? '' : `
       <div class="trabajos-head">
-        <h3 class="subtitulo">Trabajos recientes</h3>
+        <h3 class="subtitulo">${esc(sec.trabajos.titulo)}</h3>
         <a class="link-flecha" href="${esc(n.instagram.url)}" ${ext}>Ver más en Instagram ${flecha}</a>
       </div>
       <ul class="trabajos">
-        ${n.trabajos
+        ${trabajosVisibles
           .map(
             (t) => `
         <li>
           <figure class="trabajo">
             <div class="trabajo-foto">${foto(t.foto, t.fotoAlt, { sizes: '(min-width: 900px) 30vw, 92vw' })}</div>
-            <figcaption><strong>${esc(t.auto)}</strong><span>${esc(t.servicio)}</span></figcaption>
+            <figcaption><strong>${esc(t.auto)}</strong><span>${esc(t.servicio)}</span>${t.descripcion ? `<span class="trabajo-desc">${esc(t.descripcion)}</span>` : ''}</figcaption>
           </figure>
         </li>`,
           )
           .join('')}
-      </ul>
+      </ul>`;
+  // Resultados y trabajos comparten sección: si se oculta una parte, la otra queda sola.
+  const resultados = !bloqueResultados && !bloqueTrabajos ? '' : bloqueResultados
+    ? `${bloqueResultados}${bloqueTrabajos}
+    </div>
+  </section>`
+    : `
+  <section class="section" id="resultados" aria-label="${esc(sec.trabajos.titulo)}">
+    <div class="wrap">${bloqueTrabajos}
     </div>
   </section>`;
 
   // ---------- 05 · Proceso ----------
-  const proceso = `
+  const proceso = !ver('proceso') || !n.proceso.length ? '' : `
   <section class="section" id="proceso" aria-labelledby="proceso-titulo">
     <div class="wrap">
-      ${cabecera({ num: 5, nombre: 'Proceso', t: ['Cinco pasos.', 'Cero sorpresas.'], id: 'proceso-titulo' })}
+      ${cabecera({ num: 'proceso', nombre: 'Proceso', t: sec.proceso.titulo, id: 'proceso-titulo' })}
       <div class="proceso" id="proceso-linea">
         <div class="proceso-riel" aria-hidden="true"><i class="proceso-fill"></i></div>
         <ol class="pasos">
@@ -297,34 +373,36 @@ export function renderPagina(html, negocio, imagenes) {
   const cot = n.cotizador;
   const def = cot.porDefecto;
   const inicial = calcular(n, { tamano: def.tamano, principal: def.principal, estado: def.estado, extras: [] });
+  const paquetesActivos = n.paquetes.filter((pk) => pk.activo);
+  const sueltos = opcionesPrincipales(n).filter((o) => o.tipo === 'servicio');
   const resumenLinea = (r) => `${r.tamano.nombre} · ${r.principal.nombre} · ${r.estado.nombre}`;
-  const cotizador = `
+  const cotizador = !ver('cotizador') || !tamanosActivos(n).length || !opcionesPrincipales(n).length ? '' : `
   <section class="section" id="cotizador" aria-labelledby="cotizador-titulo">
     <div class="wrap">
-      ${cabecera({ num: 6, nombre: 'Presupuesto', t: ['Armalo.', 'Mirá el precio.'], id: 'cotizador-titulo', texto: 'Elegí tu auto y lo que querés hacerle. El precio cambia al instante y lo mandás por WhatsApp.' })}
+      ${cabecera({ num: 'cotizador', nombre: 'Presupuesto', t: sec.cotizador.titulo, id: 'cotizador-titulo', texto: sec.cotizador.texto })}
       <form class="cotizador" id="cotizador-form" novalidate>
         <div class="cot-pasos">
           <fieldset class="grupo">
             <legend><span class="grupo-num dato">1</span>Tamaño</legend>
             <div class="opciones-tamano">
-              ${cot.tamanos
+              ${tamanosActivos(n)
                 .map(
-                  (t) => `<label class="opcion-card"><input type="radio" name="tamano" value="${t.id}"${t.id === def.tamano ? ' checked' : ''}>${silueta(t.id)}<strong>${esc(t.nombre)}</strong><small>${esc(t.ejemplo)}</small></label>`,
+                  (t) => `<label class="opcion-card"><input type="radio" name="tamano" value="${esc(t.id)}"${t.id === def.tamano ? ' checked' : ''}>${silueta(t.silueta)}<strong>${esc(t.nombre)}</strong><small>${esc(t.ejemplo)}</small></label>`,
                 )
                 .join('')}
             </div>
           </fieldset>
           <fieldset class="grupo">
             <legend><span class="grupo-num dato">2</span>Paquete</legend>
-            <div class="opciones-paquete">
-              ${n.paquetes
+            ${paquetesActivos.length ? `<div class="opciones-paquete">
+              ${paquetesActivos
                 .map(
-                  (pk) => `<label class="opcion-card opcion-paquete"><input type="radio" name="principal" value="${pk.id}"${pk.id === def.principal ? ' checked' : ''}><strong>${esc(pk.nombre)}</strong><small>Desde ${pesos(pk.precio)}</small><ul>${pk.incluye.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></label>`,
+                  (pk) => `<label class="opcion-card opcion-paquete"><input type="radio" name="principal" value="${esc(pk.id)}"${pk.id === def.principal ? ' checked' : ''}><strong>${esc(pk.nombre)}</strong><small>Desde ${pesos(pk.precio)}</small><ul>${pk.incluye.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></label>`,
                 )
                 .join('')}
-            </div>
-            <p class="grupo-sub">O un servicio suelto</p>
-            <div class="chips">${n.servicios.map((s) => `<label class="opcion-chip"><input type="radio" name="principal" value="${s.id}"><span>${esc(s.nombre)}</span></label>`).join('')}</div>
+            </div>` : ''}
+            ${sueltos.length ? `<p class="grupo-sub">${paquetesActivos.length ? 'O un servicio suelto' : 'Elegí un servicio'}</p>
+            <div class="chips">${sueltos.map((s) => `<label class="opcion-chip"><input type="radio" name="principal" value="${esc(s.id)}"${s.id === def.principal ? ' checked' : ''}><span>${esc(s.nombre)}</span></label>`).join('')}</div>` : ''}
           </fieldset>
           <fieldset class="grupo">
             <legend><span class="grupo-num dato">3</span>Estado de la pintura</legend>
@@ -332,79 +410,96 @@ export function renderPagina(html, negocio, imagenes) {
             <div class="estado-marcas" aria-hidden="true">${cot.estados.map((e, i) => `<span data-estado="${i}"${i === def.estado ? ' class="activo"' : ''}>${esc(e.nombre)}<small class="dato">+${Math.round(e.recargo * 100)} %</small></span>`).join('')}</div>
             <p class="grupo-sub" id="estado-nota">${inicial.aplicaEstado ? 'Cuantas más marcas, más trabajo de pulido.' : 'No cambia el precio de este servicio.'}</p>
           </fieldset>
-          <fieldset class="grupo">
+          ${extrasActivos(n).length ? `<fieldset class="grupo">
             <legend><span class="grupo-num dato">4</span>Extras</legend>
-            <div class="chips">${cot.extras.map((e) => `<label class="opcion-chip"><input type="checkbox" name="extras" value="${e.id}"><span>${esc(e.nombre)} <small class="dato">+${pesos(e.precio)}</small></span></label>`).join('')}</div>
-          </fieldset>
+            <div class="chips">${extrasActivos(n).map((e) => `<label class="opcion-chip"><input type="checkbox" name="extras" value="${esc(e.id)}"><span>${esc(e.nombre)} <small class="dato">+${pesos(e.precio)}</small></span></label>`).join('')}</div>
+          </fieldset>` : ''}
         </div>
-        <aside class="cot-resumen panel" id="cot-resumen" aria-labelledby="resumen-titulo" data-tamano="${def.tamano}">
+        <aside class="cot-resumen panel" id="cot-resumen" aria-labelledby="resumen-titulo" data-tamano="${esc(inicial.tamano.silueta ?? 'mediano')}">
           <h3 class="visually-hidden" id="resumen-titulo">Tu presupuesto</h3>
-          <div class="cot-auto" aria-hidden="true">${cot.tamanos.map((t) => silueta(t.id, `cot-silueta cot-silueta-${t.id}`)).join('')}</div>
+          <div class="cot-auto" aria-hidden="true">${['chico', 'mediano', 'suv', 'grande'].map((k) => silueta(k, `cot-silueta cot-silueta-${k}`)).join('')}</div>
           <p class="dato cot-linea" id="cot-linea">${esc(resumenLinea(inicial))}</p>
           <p class="cot-total"><output id="cot-total" aria-live="polite">${pesos(inicial.total)}</output> <span class="dato">estimado</span></p>
           <dl class="cot-desglose" id="cot-desglose">${inicial.desglose.map((d) => `<div><dt>${esc(d.concepto)}</dt><dd class="dato">${pesos(d.monto)}</dd></div>`).join('')}</dl>
           <p class="cot-tiempo">Tiempo en el taller: <strong class="dato" id="cot-tiempo">${esc(inicial.tiempo)}</strong></p>
-          <div class="campo">
-            <label for="cot-nombre">Tu nombre <span class="opcional">(opcional)</span></label>
-            <input id="cot-nombre" name="nombre" type="text" autocomplete="given-name" maxlength="40">
+          <div class="cot-campos">
+            <div class="campo">
+              <label for="cot-nombre">Tu nombre <span class="opcional">(opcional)</span></label>
+              <input id="cot-nombre" name="nombre" type="text" autocomplete="given-name" maxlength="40">
+            </div>
+            <div class="campo">
+              <label for="cot-telefono">Tu WhatsApp <span class="opcional">(opcional)</span></label>
+              <input id="cot-telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel" maxlength="30" placeholder="Ej.: 2284 123456">
+            </div>
           </div>
+          <div class="cot-trampa" aria-hidden="true"><label>No completar <input name="web" tabindex="-1" autocomplete="off"></label></div>
           <button class="btn btn-acento btn-full" type="submit">Pedir cotización por WhatsApp ${flecha}</button>
-          <p class="nota">${esc(cot.nota)}</p>
+          ${cot.nota ? `<p class="nota">${esc(cot.nota)}</p>` : ''}
+          ${cot.condiciones ? `<p class="nota cot-condiciones">${esc(cot.condiciones)}</p>` : ''}
+          ${cot.privacidad ? `<p class="nota cot-privacidad">${esc(cot.privacidad)}</p>` : ''}
         </aside>
       </form>
     </div>
   </section>`;
 
   // ---------- 07 · Opiniones ----------
-  const opiniones = `
+  const opinionesVisibles = n.opiniones.filter((o) => o.visible && o.texto);
+  const hayEjemplos = opinionesVisibles.some((o) => o.ejemplo);
+  const opiniones = !ver('opiniones') || !opinionesVisibles.length ? '' : `
   <section class="section" id="opiniones" aria-labelledby="opiniones-titulo">
     <div class="wrap">
-      ${cabecera({ num: 7, nombre: 'Opiniones', t: ['Te lo devolvemos', 'impecable.'], id: 'opiniones-titulo' })}
+      ${cabecera({ num: 'opiniones', nombre: 'Opiniones', t: sec.opiniones.titulo, id: 'opiniones-titulo' })}
       <ul class="opiniones">
-        ${n.opiniones
+        ${opinionesVisibles
           .map(
             (o) => `
         <li class="opinion panel">
           <p class="estrellas" role="img" aria-label="${o.estrellas} de 5 estrellas">${Array.from({ length: 5 }, (_, i) => `<span class="${i < o.estrellas ? 'on' : ''}">${icono('estrella')}</span>`).join('')}</p>
           <blockquote>${esc(o.texto)}</blockquote>
-          <p class="opinion-autor"><strong>${esc(o.nombre)}</strong><span>${esc(o.auto)}</span></p>
+          <p class="opinion-autor">${o.foto ? `<span class="opinion-foto">${foto(o.foto, '', { sizes: '48px', decorativa: true })}</span>` : ''}<strong>${esc(o.nombre)}</strong><span>${esc(o.auto)}</span></p>
         </li>`,
           )
           .join('')}
       </ul>
-      <p class="nota">${esc(n.opinionesNota)}</p>
+      ${hayEjemplos && n.opinionesNota ? `<p class="nota">${esc(n.opinionesNota)}</p>` : ''}
     </div>
   </section>`;
 
   // ---------- 08 · Contacto + preguntas ----------
-  const comoLlegar = `https://www.google.com/maps/dir/?api=1&destination=${n.mapa.lat},${n.mapa.lng}`;
+  const comoLlegar = n.mapsUrl || `https://www.google.com/maps/dir/?api=1&destination=${n.mapa.lat},${n.mapa.lng}`;
+  const verContacto = ver('contacto');
+  const verPreguntas = ver('preguntas') && n.preguntas.length > 0;
+  const verMapa = ver('mapa');
   const horario = n.horario.map((x) => `${esc(x.dias)}: ${esc(x.horas)}`).join('<br>');
-  const contacto = `
-  <section class="section" id="contacto" aria-labelledby="contacto-titulo">
-    <div class="wrap contacto-grid">
-      <div class="contacto-panel panel">
-        ${etiqueta(8, 'Contacto')}
-        ${titulo(n.contacto.titulo, { id: 'contacto-titulo' })}
+  const contacto = !verContacto && !verPreguntas && !verMapa ? '' : `
+  <section class="section" id="contacto" aria-labelledby="${verContacto ? 'contacto-titulo' : 'preguntas-titulo'}">
+    ${verContacto || verPreguntas ? `<div class="wrap contacto-grid${verContacto && verPreguntas ? '' : ' contacto-grid-uno'}">
+      ${verContacto ? `<div class="contacto-panel panel">
+        ${etiqueta('contacto', 'Contacto')}
+        ${titulo(sec.contacto.titulo, { id: 'contacto-titulo' })}
+        ${sec.contacto.texto ? `<p class="lead">${esc(sec.contacto.texto)}</p>` : ''}
         <dl class="datos-contacto">
           <div><dt>Dirección</dt><dd>${esc(n.direccion)}<br><a class="link-flecha" href="${esc(comoLlegar)}" ${ext}>Cómo llegar ${flecha}</a></dd></div>
           <div><dt>Horario</dt><dd>${horario}</dd></div>
           <div><dt>WhatsApp</dt><dd><a href="${waCotizacion}" ${ext}>${telefono('dato')}</a></dd></div>
-          <div><dt>Instagram</dt><dd><a href="${esc(n.instagram.url)}" ${ext}>${esc(n.instagram.usuario)}</a></dd></div>
+          ${n.telefono ? `<div><dt>Teléfono</dt><dd><a href="tel:${esc(n.telefono.replace(/[^\d+]/g, ''))}">${esc(n.telefono)}</a></dd></div>` : ''}
+          ${n.email ? `<div><dt>Email</dt><dd><a href="mailto:${esc(n.email)}">${esc(n.email)}</a></dd></div>` : ''}
+          ${n.instagram.url ? `<div><dt>Instagram</dt><dd><a href="${esc(n.instagram.url)}" ${ext}>${esc(n.instagram.usuario || 'Instagram')}</a></dd></div>` : ''}
         </dl>
         <a class="btn btn-acento contacto-cta" href="${waCotizacion}" ${ext}>Pedir cotización por WhatsApp ${flecha}</a>
-      </div>
-      <div class="faq" id="preguntas">
-        <h3 class="subtitulo">Preguntas frecuentes</h3>
+      </div>` : ''}
+      ${verPreguntas ? `<div class="faq" id="preguntas">
+        <h3 class="subtitulo" id="preguntas-titulo">${esc(sec.preguntas.titulo)}</h3>
         <div class="faq-lista">
           ${n.preguntas.map((q) => `<details><summary>${esc(q.pregunta)}<span class="faq-icono" aria-hidden="true"></span></summary><p>${esc(q.respuesta)}</p></details>`).join('')}
         </div>
-      </div>
-    </div>
-    <div class="wrap">
+      </div>` : ''}
+    </div>` : ''}
+    ${verMapa ? `<div class="wrap">
       <div class="mapa panel" id="mapa">
         <a class="mapa-fallback" href="${esc(comoLlegar)}" ${ext}>${icono('pin')} Ver ${esc(n.direccionCorta)} en el mapa</a>
       </div>
-    </div>
+    </div>` : ''}
   </section>`;
 
   // ---------- Footer ----------
@@ -415,29 +510,69 @@ export function renderPagina(html, negocio, imagenes) {
       <nav aria-label="Secciones"><p class="footer-tit">Secciones</p><ul>${[...links, ['#contacto', 'Contacto']].map(([hh, t]) => `<li><a href="${hh}">${t}</a></li>`).join('')}</ul></nav>
       <div><p class="footer-tit">Contacto</p><ul>
         <li><a href="${waCotizacion}" ${ext}>WhatsApp ${telefono()}</a></li>
-        <li><a href="${esc(n.instagram.url)}" ${ext}>Instagram ${esc(n.instagram.usuario)}</a></li>
+        ${n.instagram.url ? `<li><a href="${esc(n.instagram.url)}" ${ext}>Instagram ${esc(n.instagram.usuario)}</a></li>` : ''}
+        ${n.redes.map((r) => `<li><a href="${esc(r.url)}" ${ext}>${esc(r.nombre || r.url)}</a></li>`).join('')}
+        ${n.email ? `<li><a href="mailto:${esc(n.email)}">${esc(n.email)}</a></li>` : ''}
         <li>${esc(n.direccion)}</li>
         <li>${esc(n.horarioCorto)}</li>
       </ul></div>
     </div>
     <p class="wordmark" aria-hidden="true">${esc(n.nombreCorto)}</p>
-    <p class="wrap footer-demo">${esc(n.avisoDemo)} · © <span id="anio">${new Date().getFullYear()}</span></p>
+    <p class="wrap footer-demo">${n.demo.activo && n.demo.aviso ? `${esc(n.demo.aviso)} · ` : ''}© <span id="anio">${hoy.getFullYear()}</span> ${esc(n.nombre)}</p>
   </footer>
   <div class="barra-movil" id="barra-movil">
-    <a class="btn btn-borde" href="#cotizador">Presupuesto</a>
+    ${ver('cotizador') ? '<a class="btn btn-borde" href="#cotizador">Presupuesto</a>' : ''}
     <a class="btn btn-acento" href="${waCotizacion}" ${ext}>Pedir cotización</a>
   </div>
-  <div class="barra-cotizador" id="barra-cotizador">
+  ${cotizador ? '' : '<!-- sin cotizador -->'}<div class="barra-cotizador" id="barra-cotizador"${cotizador ? '' : ' hidden'}>
     <p><span>Estimado</span><output id="barra-total">${pesos(inicial.total)}</output></p>
     <button type="submit" form="cotizador-form" class="btn btn-acento">Pedir cotización</button>
   </div>`;
 
-  const cuerpo = `${header}<main id="contenido">${hero}${manifiesto}${pulido}${ceramico}${servicios}${resultados}${proceso}${cotizador}${opiniones}${contacto}</main>${footer}`;
+  const aviso = opciones.preview ? `<div class="aviso-preview" role="status">Vista previa · ${esc(opciones.preview)}</div>` : '';
+  const datos = `<script type="application/json" id="datos-negocio">${jsonSeguro(datosCliente(n))}</script>`;
+  const cuerpo = `${aviso}${header}<main id="contenido">${hero}${manifiesto}${pulido}${ceramico}${servicios}${promociones}${resultados}${proceso}${cotizador}${opiniones}${contacto}</main>${footer}${datos}`;
 
-  return html
-    .replace('<!--@pagina-->', cuerpo)
-    .replace(/\{\{(\w+)\}\}/g, (mm, k) => esc(n[k] ?? mm));
+  return conHead(html.replace('<!--@pagina-->', `${MARCAS.cuerpoIni}${cuerpo}${MARCAS.cuerpoFin}`), n, imagenes, opciones);
 }
 
-// Exportado para el cliente: lista de opciones del cotizador (paquetes + servicios).
-export { opcionesPrincipales };
+// <head>: título, descripción, Open Graph y favicon (módulo SEO del panel).
+export function renderHead(negocio, imagenes = {}, opciones = {}) {
+  const n = normalizar(negocio);
+  const titulo = n.seo.titulo || `${n.nombre}${n.ciudad ? ` · ${n.ciudad}` : ''}`;
+  const descripcion = n.seo.descripcion || n.descripcion || `${n.nombre}: detailing en ${n.ciudad}.`;
+  const abs = (u) => (!u ? '' : /^https?:/i.test(u) ? u : opciones.origen ? `${opciones.origen.replace(/\/$/, '')}${u}` : u);
+  const og = n.seo.imagen ? (typeof n.seo.imagen === 'object' ? n.seo.imagen.src : imagenes[n.seo.imagen] ? `/img/${n.seo.imagen}.webp` : '') : n.hero.foto && typeof n.hero.foto === 'object' ? n.hero.foto.src : imagenes[n.hero.foto] ? `/img/${n.hero.foto}.webp` : '';
+  const favicon = n.seo.favicon && typeof n.seo.favicon === 'object' ? n.seo.favicon.src : '/favicon.svg';
+  return [
+    `<title>${esc(titulo)}</title>`,
+    `<meta name="description" content="${esc(descripcion)}">`,
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:title" content="${esc(titulo)}">`,
+    `<meta property="og:description" content="${esc(descripcion)}">`,
+    og ? `<meta property="og:image" content="${esc(abs(og))}">` : '',
+    `<meta name="twitter:card" content="${og ? 'summary_large_image' : 'summary'}">`,
+    `<link rel="icon" href="${esc(favicon)}"${favicon.endsWith('.svg') ? ' type="image/svg+xml"' : ''}>`,
+    opciones.noindex ? '<meta name="robots" content="noindex">' : '',
+  ]
+    .filter(Boolean)
+    .join('\n  ');
+}
+
+function conHead(html, n, imagenes, opciones) {
+  return html.replace('<!--@head-->', `${MARCAS.headIni}\n  ${renderHead(n, imagenes, opciones)}\n  ${MARCAS.headFin}`);
+}
+
+// Re-render en el servidor: reemplaza head y cuerpo dentro de la plantilla que dejó el build.
+export function renderSobrePlantilla(plantilla, negocio, imagenes = {}, opciones = {}) {
+  const cortar = (html, ini, fin, nuevo) => {
+    const a = html.indexOf(ini);
+    const b = html.indexOf(fin);
+    if (a < 0 || b < 0) throw new Error('Plantilla sin marcadores');
+    return html.slice(0, a) + nuevo + html.slice(b + fin.length);
+  };
+  const tmp = cortar(cortar(plantilla, MARCAS.headIni, MARCAS.headFin, '<!--@head-->'), MARCAS.cuerpoIni, MARCAS.cuerpoFin, '<!--@pagina-->');
+  return renderPagina(tmp, negocio, imagenes, opciones);
+}
+
+

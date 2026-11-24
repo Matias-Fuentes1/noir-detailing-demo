@@ -514,3 +514,42 @@ input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 
   .barra-movil.visible, .barra-cotizador.visible { opacity: 1; pointer-events: auto; }
   .no-js .barra-movil { opacity: 1; pointer-events: auto; }
 }
+
+/* ---------- Agregados v5 (contenido administrable) ---------- */
+/* Bento con cantidad variable de servicios: filas extra y última fila sin huecos. */
+.bento { grid-auto-rows: 300px; }
+@media (min-width: 1100px) {
+  .bento-item:last-child:nth-child(3n + 4) { grid-column: 1 / -1; }
+  .bento-item:last-child:nth-child(3n + 5) { grid-column: span 4; }
+  .bento-item:only-child { grid-column: 1 / -1; grid-row: 1 / 3; }
+}
+
+/* Promociones */
+.promos { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
+.promo { display: grid; height: 100%; overflow: hidden; }
+.promo-foto { aspect-ratio: 16 / 9; overflow: hidden; }
+.promo-foto img, .promo-foto .ph { width: 100%; height: 100%; object-fit: cover; filter: brightness(.85) saturate(.9); }
+.promo-cuerpo { display: grid; gap: 10px; align-content: start; padding: 24px; }
+.promo-titulo { font-family: var(--display); font-weight: 300; font-stretch: 120%; text-transform: uppercase; font-size: clamp(22px, 1vw + 16px, 30px); line-height: 1.05; }
+.promo-texto { color: var(--text-2); font-size: 15px; }
+.promo-precio { display: flex; align-items: baseline; gap: 10px; font-size: 15px; }
+.promo-precio strong { font-size: 28px; font-weight: 500; color: var(--accent); font-variant-numeric: tabular-nums; }
+.promo-precio s { color: var(--text-2); }
+.promo-vence { font-size: 12px; color: var(--text-2); letter-spacing: .06em; }
+
+/* Cotizador: datos opcionales, trampa anti-bots y textos legales */
+.cot-campos { display: grid; gap: 12px; }
+.cot-trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.cot-condiciones, .cot-privacidad { font-size: 13px; }
+.cot-privacidad { margin-top: -8px !important; }
+
+/* Opiniones con foto, trabajos con descripción, contacto de una columna */
+.opinion-autor { grid-template-columns: auto 1fr; column-gap: 12px; align-items: center; }
+.opinion-autor > :not(.opinion-foto) { grid-column: 2; }
+.opinion-foto { grid-row: 1 / 3; width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: var(--panel-2); }
+.opinion-foto img { width: 100%; height: 100%; object-fit: cover; }
+.trabajo-desc { color: var(--text-2); font-size: 14px; }
+.contacto-grid-uno { grid-template-columns: minmax(0, 1fr) !important; max-width: 760px; }
+
+/* Aviso de la vista previa del panel */
+.aviso-preview { position: fixed; z-index: 100; left: 50%; bottom: 16px; transform: translateX(-50%); padding: 8px 16px; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font: 500 12px/1.4 var(--mono); letter-spacing: .08em; text-transform: uppercase; pointer-events: none; box-shadow: 0 6px 24px rgba(0,0,0,.4); }
